@@ -27,4 +27,7 @@ public interface IMovieRepository extends CrudRepository<Movie, Long> {
 	@Query("SELECT m.image, m.title, m.createAt FROM Movie AS m")
 	public List<MovieRecord> getAllMovies();
 	
+	@Query("SELECT m FROM Movie AS m WHERE m.gender =?1 ")
+	public List<Movie> getMoviesByIdGender(Long id);
+	
 }

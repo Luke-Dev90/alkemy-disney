@@ -12,4 +12,6 @@ public interface IGenderService {
 	
 	public void deleteGender(Long id);
 	
+	public Gender getById(Long id);
+	
 }
