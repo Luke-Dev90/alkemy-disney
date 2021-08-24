@@ -34,9 +34,13 @@ public class Movie {
 	@Size(min=1, max=60)
 	private String title;
 	
+	@NotEmpty
+	private String image;
+	
 	@Column(name="create_at")
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
+	
 	
 	@Min(1)
 	@Max(5)

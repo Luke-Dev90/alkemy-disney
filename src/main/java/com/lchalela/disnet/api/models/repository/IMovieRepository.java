@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.lchalela.disnet.api.models.entity.Movie;
+import com.lchalela.disnet.api.models.records.MovieRecord;
 
 @Repository
 public interface IMovieRepository extends CrudRepository<Movie, Long> {
@@ -22,5 +23,8 @@ public interface IMovieRepository extends CrudRepository<Movie, Long> {
 	
 	@Query("SELECT m FROM Movie AS m ORDER BY m.createAt DESC")
 	public List<Movie> listMovieOrderDESC();
+	
+	@Query("SELECT m.image, m.title, m.createAt FROM Movie AS m")
+	public List<MovieRecord> getAllMovies();
 	
 }
