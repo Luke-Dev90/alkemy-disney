@@ -1,5 +1,6 @@
 package com.lchalela.disnet.api.models.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,13 +11,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="genders")
-public class Gender {
+public class Gender implements Serializable {
 	
+
+	private static final long serialVersionUID = -4702850969817534361L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -27,6 +31,7 @@ public class Gender {
 	@NotEmpty
 	private String image;
 	
+	@JsonIgnoreProperties(value = { "hibernateLazyInitializer","handler"})
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "gender")
 	private List<Movie> movies;

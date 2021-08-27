@@ -1,17 +1,15 @@
 package com.lchalela.disnet.api.models.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.lchalela.disnet.api.models.entity.Movie;
 import com.lchalela.disnet.api.models.records.MovieRecord;
 import com.lchalela.disnet.api.models.repository.IMovieRepository;
 
 @Service
-public class MovieServiceImpl implements IMovieService{
-	
+public class MovieServiceImpl implements IMovieService {
+
 	@Autowired
 	private IMovieRepository movieRepository;
 
@@ -22,15 +20,16 @@ public class MovieServiceImpl implements IMovieService{
 
 	@Override
 	public List<Movie> listMovieOrder(String order) {
-		
-		if(order.equalsIgnoreCase("asc")) {
+
+		if (order.equalsIgnoreCase("asc")) {
 			return this.movieRepository.listMovieOrderASC();
-		}else if(order.equalsIgnoreCase("desc")){
+		} else if (order.equalsIgnoreCase("desc")) {
 			return this.movieRepository.listMovieOrderDESC();
 		}
 		return null;
 	}
 
+	
 	@Override
 	public Movie getMovieByName(String name) {
 		return this.movieRepository.getMovieByName(name);
@@ -55,5 +54,5 @@ public class MovieServiceImpl implements IMovieService{
 	public List<Movie> getMoviesByIdGender(Long id) {
 		return this.movieRepository.getMoviesByIdGender(id);
 	}
-	
+
 }

@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lchalela.disnet.api.models.records.CharacterRecord;
-import com.lchalela.disnet.api.models.repository.ICharacterRepository;
-
+import com.lchalela.disnet.api.models.repository.ICharactersRepository;
+import com.lchalela.disnet.api.models.entity.Character;
 
 @Service
 public class CharacterServiceImpl implements ICharacterService{
 	
 	@Autowired
-	private ICharacterRepository characterRepository;
+	private ICharactersRepository characterRepository;
 
 	@Override
 	public List<CharacterRecord> listAllCharacters() {

@@ -9,6 +9,6 @@ import com.lchalela.disnet.api.models.entity.Gender;
 @Repository
 public interface IGenderRepository extends CrudRepository<Gender,Long>{
 
-	@Query("SELECT g FROM Gender AS g FROM g.id =?1")
+	@Query("SELECT g FROM Gender AS g WHERE g.id =?1")
 	public Gender getById(Long id);
 }

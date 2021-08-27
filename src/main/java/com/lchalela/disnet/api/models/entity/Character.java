@@ -1,5 +1,6 @@
 package com.lchalela.disnet.api.models.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -20,8 +21,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="characters")
-public class Character {
-	
+public class Character implements Serializable {
+
+	private static final long serialVersionUID = -1033951515159598492L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -29,6 +32,8 @@ public class Character {
 	@NotEmpty
 	@Size(min = 1, max=60)
 	private String name;
+	
+	private String image;
 	
 	@NotNull
 	private Long age;
@@ -45,6 +50,14 @@ public class Character {
 		joinColumns = @JoinColumn(name="character_id"),
 		inverseJoinColumns=@JoinColumn(name="movie_id"))
 	private List<Movie> movies;
+	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 
 	public Long getId() {
 		return id;

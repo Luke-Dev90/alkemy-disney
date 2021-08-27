@@ -1,5 +1,6 @@
 package com.lchalela.disnet.api.models.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,11 +23,16 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="movies")
-public class Movie {
+public class Movie  implements Serializable{
 	
+
+	private static final long serialVersionUID = 8803015410245108240L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -38,8 +44,9 @@ public class Movie {
 	@NotEmpty
 	private String image;
 	
-	@Column(name="create_at")
+	@Column
 	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date createAt;
 	
 	
@@ -47,6 +54,7 @@ public class Movie {
 	@Max(5)
 	private Long qualification;
 	
+	@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name="gender_id")
 	private Gender gender;
@@ -55,6 +63,16 @@ public class Movie {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Character> characters = new ArrayList<Character>();
 
+	public Movie(){
+		
+	}
+	
+	public Movie(Date createAt,String title,String image) {
+		this.title = title;
+		this.title = image;
+		this.createAt = createAt;
+	}
+	
 	public Long getId() {
 		return id;
 	}

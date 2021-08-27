@@ -3,6 +3,7 @@ package com.lchalela.disnet.api.models.service;
 import java.util.List;
 
 import com.lchalela.disnet.api.models.records.CharacterRecord;
+import  com.lchalela.disnet.api.models.entity.Character;
 
 public interface ICharacterService {
 	
