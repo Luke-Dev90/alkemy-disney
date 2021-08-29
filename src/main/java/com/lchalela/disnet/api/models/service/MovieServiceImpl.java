@@ -37,7 +37,7 @@ public class MovieServiceImpl implements IMovieService {
 
 	@Override
 	public Movie getMovieById(Long id) {
-		return this.movieRepository.getMovieById(id);
+		return this.movieRepository.findById(id).orElse(null);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class MovieServiceImpl implements IMovieService {
 
 	@Override
 	public List<Movie> getMoviesByIdGender(Long id) {
-		return this.movieRepository.getMoviesByIdGender(id);
+		return this.movieRepository.getMoviesByIdGender(id); 
 	}
 
 }

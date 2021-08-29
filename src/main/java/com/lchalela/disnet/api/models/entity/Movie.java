@@ -45,6 +45,7 @@ public class Movie  implements Serializable{
 	private String image;
 	
 	@Column
+	@NotEmpty
 	@Temporal(TemporalType.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date createAt;
@@ -54,6 +55,7 @@ public class Movie  implements Serializable{
 	@Max(5)
 	private Long qualification;
 	
+
 	@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name="gender_id")
@@ -63,15 +65,18 @@ public class Movie  implements Serializable{
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Character> characters = new ArrayList<Character>();
 
-	public Movie(){
-		
-	}
+	public Movie() {}
 	
-	public Movie(Date createAt,String title,String image) {
+	public Movie(Long id, String title,  String image, Date createAt,Long qualification, Gender gender, List<Character> characters) {
+		this.id = id;
 		this.title = title;
-		this.title = image;
+		this.image = image;
 		this.createAt = createAt;
+		this.qualification = qualification;
+		this.gender = gender;
+		this.characters = characters;
 	}
+
 	
 	public Long getId() {
 		return id;

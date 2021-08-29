@@ -33,6 +33,7 @@ public class Character implements Serializable {
 	@Size(min = 1, max=60)
 	private String name;
 	
+	@NotEmpty
 	private String image;
 	
 	@NotNull
@@ -51,6 +52,24 @@ public class Character implements Serializable {
 		inverseJoinColumns=@JoinColumn(name="movie_id"))
 	private List<Movie> movies;
 	
+	
+	public Character(){
+		
+	}
+	
+	public Character(Long id, String name,String image, Long age,
+			 Double weight, String history, List<Movie> movies) {
+		this.id = id;
+		this.name = name;
+		this.image = image;
+		this.age = age;
+		this.weight = weight;
+		this.history = history;
+		this.movies = movies;
+	}
+
+
+
 	public String getImage() {
 		return image;
 	}

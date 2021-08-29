@@ -35,6 +35,18 @@ public class Gender implements Serializable {
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "gender")
 	private List<Movie> movies;
+	
+	public Gender() {
+		
+	}
+
+	public Gender(Long id,  String name,  String image, List<Movie> movies) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.image = image;
+		this.movies = movies;
+	}
 
 	public Long getId() {
 		return id;

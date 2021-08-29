@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.lchalela.disnet.api.models.records.CharacterRecord;
 import com.lchalela.disnet.api.models.repository.ICharactersRepository;
 import com.lchalela.disnet.api.models.entity.Character;
+import com.lchalela.disnet.api.models.exception.NotFoundGenderID;
 
 @Service
 public class CharacterServiceImpl implements ICharacterService{
