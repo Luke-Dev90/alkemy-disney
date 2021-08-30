@@ -17,6 +17,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cascade;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -46,10 +48,12 @@ public class Character implements Serializable {
 	private String history;
 	
 	@JsonIgnoreProperties("characters")
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@ManyToMany(cascade =  {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name="character_movie",
 		joinColumns = @JoinColumn(name="character_id"),
 		inverseJoinColumns=@JoinColumn(name="movie_id"))
+	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
 	private List<Movie> movies;
 	
 	
@@ -68,6 +72,13 @@ public class Character implements Serializable {
 		this.movies = movies;
 	}
 
+	public void addMovie(Movie move) {
+		this.movies.add(move);
+	}
+
+	public void removeMovie() {
+		this.movies.removeAll(movies);
+	}
 
 
 	public String getImage() {

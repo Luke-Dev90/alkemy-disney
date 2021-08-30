@@ -20,4 +20,7 @@ public interface ICharactersRepository extends JpaRepository<Character, Long>{
 	@Query("SELECT c FROM Character AS c WHERE c.age =?1")
 	public List<Character> getCharacterByAge(Long age);
 	
+	// SELECT * FROM characters JOIN character_movie ON movie_id = characters.id where movie_id = 1;
+	@Query(value="SELECT * FROM characters INNER JOIN character_movie ON characters.id= character_id where movie_id=?1",nativeQuery = true)
+	public List<Character> getMovieId(Long id);
 }

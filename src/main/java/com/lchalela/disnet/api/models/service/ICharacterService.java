@@ -19,6 +19,8 @@ public interface ICharacterService {
 	
 	public Character saveCharacter(Character character);
 	
+	public Character updateCharacter(Long id, Character character );
+	
 	public void deleteCharacter(Long id);
 	
 }

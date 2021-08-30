@@ -4,8 +4,7 @@ package com.lchalela.disnet.api.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
+import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,9 @@ public class MovieRestController {
 
 	@Autowired
 	private IMovieService movieService;
+	Map<String,Object> response = new HashMap<>();
 
+	
 	@GetMapping
 	public ResponseEntity<List<MovieRecord>> getAllMovies() {
 		List<MovieRecord> movies = this.movieService.getAllMovies();
@@ -43,98 +44,42 @@ public class MovieRestController {
 	
 	@RequestMapping(value="",params = "name",method = RequestMethod.GET)
 	public ResponseEntity<?> getMovieByName(@RequestParam(name="name") String name){
-
-		Map<String, Object> response = new HashMap<>();
-		
-		Movie  movie = this.movieService.getMovieByName(name);
-		if(movie == null) {
-			response.put("message", "The movie not found: " + name);
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.NOT_FOUND);
-		}else {			
+		Movie  movie = this.movieService.getMovieByName(name);	
 			return new ResponseEntity<>(movie,HttpStatus.OK);
 		}
-		
-		
-	}
+			
+	
 
 	@RequestMapping(value="",params ="genre",method = RequestMethod.GET)
 	public ResponseEntity<?> getMovieByGenderId(@RequestParam(name="genre") String genre) {
-		List<Movie> movies = null;
-		Map<String, Object> response = new HashMap<>();
 		
-		try {
-			movies = this.movieService.getMoviesByIdGender(Long.parseLong(genre));
-			
-		} catch (NumberFormatException e) {
-			response.put("message", "The id have an incorrect format: " + genre );
-			response.put("error", e.getLocalizedMessage());
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
-		}
-		
-		if(!movies.isEmpty()) {
-			return new ResponseEntity<List<Movie>>(movies, HttpStatus.OK);
-		}else {				
-			response.put("message", "The Gender id NOT FOUND: " + genre );
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);	
-		}
+		List<Movie> movies = Optional.of(this.movieService.getMoviesByIdGender(Long.parseLong(genre)))
+					.orElseThrow(()-> new NumberFormatException());
+	
+		return new ResponseEntity<>(movies, HttpStatus.NOT_FOUND);	
 	}
 	
 
 	@RequestMapping(value="" , params="order", method=RequestMethod.GET)
 	public ResponseEntity<?> getAllMoviesOrder(@RequestParam(name="order") String order) throws DataAccessException {
-		Map<String, Object> response = new HashMap<>();
-		List<Movie> movies;
-
-		movies = this.movieService.listMovieOrder(order);
-
-		if (movies == null) {
-			response.put("message", "You entered an incorrect sort order");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<List<Movie>>(movies, HttpStatus.OK);
+		List<Movie> movies = this.movieService.listMovieOrder(order);
+		return new ResponseEntity<>(movies, HttpStatus.OK);
 	}
 	
 	@GetMapping("/details/{id}")
-	public ResponseEntity<?> getMovieById(@PathVariable String id){
+	public ResponseEntity<?> getMovieById(@PathVariable String id){	
 		
-		Map<String,Object> response = new HashMap<>();
-		Movie movie = null;
-		
-		try {		
-			movie = this.movieService.getMovieById(Long.parseLong(id));
-			 
-			if(movie == null) {		
-					response.put("message", "The movie not found");
-					return new ResponseEntity<Map<String,Object>>(response,HttpStatus.NOT_FOUND);
-				}
-			
-		}catch(NumberFormatException nfe) {
-			
-			response.put("message", "The format ID is incorrect: " + id);
-			response.put("error", nfe.getLocalizedMessage());
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-			
-		}
+		Movie movie = Optional.of(this.movieService.getMovieById(Long.parseLong(id)))
+					.orElseThrow(()-> new NumberFormatException());
 		
 		return new ResponseEntity<>(movie,HttpStatus.OK);
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveMovie(@Valid @RequestBody Movie movie,BindingResult result){
+	public ResponseEntity<?> saveMovie(@Valid @RequestBody Movie movie){
 		
-		Movie movieNew = null;
-		
-		Map<String,Object> response = new HashMap<>();
-		
-		if(result.hasErrors()) {
-			List<String>errors = result.getFieldErrors()
-					.stream()
-					.map(err -> "The fild: " + err.getField() + " " + err.getDefaultMessage())
-					.collect(Collectors.toList());
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.BAD_REQUEST);
-		}
-		
+		Movie movieNew = null;	
+			
 		try {
 			movieNew =	this.movieService.saveMovie(movie);
 		}catch(DataAccessException e) {
@@ -149,70 +94,27 @@ public class MovieRestController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateMovie(@PathVariable String id,@Valid @RequestBody Movie movie,BindingResult result){
+	public ResponseEntity<?> updateMovie(@PathVariable String id,@Valid @RequestBody Movie movie){
 		Movie movieResult = null;
-		Movie movieUpdate = null;
-		Map<String,Object> response = new HashMap<>();
-		
+				
 		try {
-			movieResult = this.movieService.getMovieById( Long.parseLong(id));	
-		}catch(NumberFormatException nf) {
-			response.put("error", "The format ID is incorrect: " + id);
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		if(movie == null) {
-			response.put("error", "Not found movie with id: " + id);
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-		}	
-		
-		if(result.hasErrors()) {
-			List<String> errors = result.getFieldErrors()
-					.stream()
-					.map(err -> "The Field " + err.getField() + " " + err.getDefaultMessage() )
-					.collect(Collectors.toList());
-			response.put("errors", errors);
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-		try {
-			movieResult.setTitle( movie.getTitle() );
-			movieResult.setGender( movie.getGender() );
-			movieResult.setImage( movie.getImage() );
-			movieResult.setQualification(movie.getQualification());
-			movieResult.setCharacters( movie.getCharacters());
-			movieResult.setCreateAt( movie.getCreateAt());
-			
-			movieUpdate = this.movieService.saveMovie(movieResult);
-			
+			movieResult = Optional.of(this.movieService.updateMovie(Long.parseLong(id), movie))
+					.orElseThrow( ()-> new NumberFormatException() );	
 		}catch (DataAccessException e) {
 			response.put("mesagge", "Error the movie not updated");
 			response.put("error", e.getLocalizedMessage());
 			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 			response.put("message", "The movie updated successfully");
-			response.put("movie", this.movieService.saveMovie(movieUpdate));
-		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
+			response.put("movie", movieResult);		
+		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> deleteMovieById(@PathVariable String id){
-		Map<String,Object> response = new HashMap<>();
-		
-		try {
-			
-			this.movieService.deleteMovie(Long.parseLong(id));
-			
-		}catch(NumberFormatException nf) {
-			response.put("message","Error The format ID is incorrect: " + id);
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-		}catch(DataAccessException dae) {
-			response.put("message","Error not found the movie with id: " + id);
-			response.put("error",dae.getLocalizedMessage());
-			return new ResponseEntity<Map<String,Object>>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-			response.put("message","The movie deleted successfully");
-		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.OK);
+	public ResponseEntity<?> delMovieById(@PathVariable String id){
+		this.movieService.deleteMovie( Optional.of(Long.parseLong(id)).orElseThrow( () -> new NumberFormatException()));		
+		response.put("message", "The movie deleted successfully");
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
 }

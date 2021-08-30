@@ -31,9 +31,10 @@ public class Gender implements Serializable {
 	@NotEmpty
 	private String image;
 	
-	@JsonIgnoreProperties(value = { "hibernateLazyInitializer","handler"})
+
 	@JsonBackReference
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "gender")
+	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH},
+				mappedBy = "gender")
 	private List<Movie> movies;
 	
 	public Gender() {

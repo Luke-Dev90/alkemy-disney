@@ -23,6 +23,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cascade;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -45,7 +47,6 @@ public class Movie  implements Serializable{
 	private String image;
 	
 	@Column
-	@NotEmpty
 	@Temporal(TemporalType.DATE)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date createAt;
@@ -57,12 +58,17 @@ public class Movie  implements Serializable{
 	
 
 	@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name="gender_id")
+	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
 	private Gender gender;
 	
 	@JsonIgnoreProperties("movies")
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(mappedBy = "movies",cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH },
+				fetch = FetchType.LAZY)
+
+	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
 	private List<Character> characters = new ArrayList<Character>();
 
 	public Movie() {}
@@ -77,6 +83,9 @@ public class Movie  implements Serializable{
 		this.characters = characters;
 	}
 
+	public void removePersonajes() {
+		this.characters.removeAll(characters);
+	}
 	
 	public Long getId() {
 		return id;

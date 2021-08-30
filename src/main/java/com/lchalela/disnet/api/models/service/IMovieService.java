@@ -21,6 +21,6 @@ public interface IMovieService {
 	
 	public List<Movie> getMoviesByIdGender(Long id);
 	
-
+	public Movie updateMovie(Long id, Movie movie);
 	
 }
