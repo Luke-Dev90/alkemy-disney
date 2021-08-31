@@ -1,3 +1,4 @@
+
 INSERT INTO genders (image,name) VALUES ('img_accion','Accion'); #1
 INSERT INTO genders (image,name) VALUES ('img_aventura','Aventura'); #2
 INSERT INTO genders (image,name) VALUES ('img_infantil','infantil'); #3
@@ -27,3 +28,4 @@ INSERT INTO roles (role) VALUES ("ROLE_ADMIN");
 INSERT INTO users_roles (user_id,role_id) VALUES (1,1); 
 INSERT INTO users_roles (user_id,role_id) VALUES (2,1);
 INSERT INTO users_roles (user_id,role_id) VALUES (2,2);
+

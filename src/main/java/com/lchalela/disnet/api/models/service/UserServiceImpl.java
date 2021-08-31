@@ -1,6 +1,7 @@
 package com.lchalela.disnet.api.models.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lchalela.disnet.api.auth.AuthorizationServerConfig;
+import com.lchalela.disnet.api.models.entity.Role;
 import com.lchalela.disnet.api.models.entity.Users;
 import com.lchalela.disnet.api.models.repository.IUserRepository;
-
 @Service
 public class UserServiceImpl implements IUserService,UserDetailsService{
 
@@ -26,18 +28,29 @@ public class UserServiceImpl implements IUserService,UserDetailsService{
 	
 	@Autowired
 	private IUserRepository userService;
-	
+	@Autowired
+	private AuthorizationServerConfig authEncrip;
 	
 	@Override
+	@Transactional
 	public Users saveUser(Users user) {
-		return this.userService.save(user);
+		
+		Users usernew = new Users();
+		usernew.setUsername(user.getUsername());
+		usernew.setPassword( authEncrip.encriptar((user.getPassword())));
+		
+		usernew.setEmail(user.getEmail());
+		usernew.setEnabled(true);	
+		
+		Role roleUser = new Role();
+		roleUser.setId(1l);
+		roleUser.setRole("ROLE_USER");		
+		usernew.addMovie(roleUser);		
+		
+		return this.userService.save(usernew);
 	}
 
-	@Override
-	public void deleteUser(Long id) {
-		this.userService.deleteById(id);
-	}
-	
+
 	@Override
 	public void sendWelcomeEmail(String email) throws IOException{
 		
@@ -49,10 +62,12 @@ public class UserServiceImpl implements IUserService,UserDetailsService{
 		return this.userService.findByUsername(username);
 	}
 
+
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Users user = this.userService.findByUsername(username);
+
+		Users user = this.userService.findByUsername(username);	
 		
 		if(user == null) {
 			logger.error("Error login, the user or password is invalid");
@@ -63,6 +78,7 @@ public class UserServiceImpl implements IUserService,UserDetailsService{
 				.stream()
 				.map(role -> new SimpleGrantedAuthority(role.getRole()))
 				.collect(Collectors.toList());
+		
 		
 		return new User(user.getUsername(), user.getPassword(),user.getEnabled(),true,true,true,authorities);
 	}

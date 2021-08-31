@@ -70,7 +70,6 @@
 		<dependency>
 			<groupId>com.sendgrid</groupId>
 			<artifactId>sendgrid-java</artifactId>
-			<version>4.7.4</version>
 		</dependency>
 
 	</dependencies>

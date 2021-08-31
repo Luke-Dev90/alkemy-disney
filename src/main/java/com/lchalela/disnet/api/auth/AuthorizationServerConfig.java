@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter{
 
+	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
@@ -25,6 +26,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Qualifier("authenticationManager")
 	private AuthenticationManager authenticationManager;
 
+	public String encriptar(String password) {
+		String passwordEcrypt = passwordEncoder.encode(password);
+		return passwordEcrypt;
+	}
+	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.tokenKeyAccess("permitAll()")
@@ -62,5 +68,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		jwtAccesTokenConverter.setVerifierKey(JwtConfig.RSA_PUBLICA);
 		return jwtAccesTokenConverter;
 	}
+	
 	
 }

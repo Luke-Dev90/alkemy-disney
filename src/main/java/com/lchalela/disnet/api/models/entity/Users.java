@@ -1,6 +1,7 @@
 package com.lchalela.disnet.api.models.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cascade;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="users")
@@ -37,11 +41,14 @@ public class Users implements Serializable{
 	@Column(unique = true)
 	private String email;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinTable(name="users_roles", joinColumns=@JoinColumn(name="user_id")
-	,inverseJoinColumns=@JoinColumn(name="role_id"),
-	uniqueConstraints= {@UniqueConstraint(columnNames= {"user_id","role_id"})})
-	private List<Role> roles;
+	@JsonIgnoreProperties("users")
+	@ManyToMany(fetch = FetchType.EAGER, cascade= {  CascadeType.MERGE,
+			CascadeType.REFRESH })
+	@JoinTable(name="users_roles",
+	joinColumns=@JoinColumn(name="user_id")
+	,inverseJoinColumns=@JoinColumn(name="role_id"))
+	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+	private List<Role> roles = new ArrayList<Role>();
 
 	public Long getId() {
 		return id;
@@ -89,6 +96,10 @@ public class Users implements Serializable{
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public void addMovie(Role role) {
+		this.roles.add(role);
 	}
 	
 }
