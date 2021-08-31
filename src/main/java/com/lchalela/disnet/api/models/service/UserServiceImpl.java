@@ -2,58 +2,75 @@ package com.lchalela.disnet.api.models.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lchalela.disnet.api.auth.AuthorizationServerConfig;
-import com.lchalela.disnet.api.models.entity.Role;
 import com.lchalela.disnet.api.models.entity.Users;
+import com.lchalela.disnet.api.models.exception.UserOrEmailException;
 import com.lchalela.disnet.api.models.repository.IUserRepository;
-@Service
-public class UserServiceImpl implements IUserService,UserDetailsService{
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 
-	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+@Service
+public class UserServiceImpl implements IUserService , UserDetailsService {
+	
+	private final String KEY = "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";
 	
 	@Autowired
 	private IUserRepository userService;
 	@Autowired
-	private AuthorizationServerConfig authEncrip;
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	@Transactional
-	public Users saveUser(Users user) {
+	public void saveUser(Users user) {
+		Users userresult = null;
+	
+		userresult =  this.userService.findByUsernameOrEmail(user.getUsername(),user.getEmail());
 		
-		Users usernew = new Users();
-		usernew.setUsername(user.getUsername());
-		usernew.setPassword( authEncrip.encriptar((user.getPassword())));
-		
-		usernew.setEmail(user.getEmail());
-		usernew.setEnabled(true);	
-		
-		Role roleUser = new Role();
-		roleUser.setId(1l);
-		roleUser.setRole("ROLE_USER");		
-		usernew.addMovie(roleUser);		
-		
-		return this.userService.save(usernew);
+		if(userresult == null) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			this.userService.save(user);		
+			
+		}else {
+			throw new UserOrEmailException("Username or email exist");
+		}
+			
 	}
-
 
 	@Override
 	public void sendWelcomeEmail(String email) throws IOException{
+		Email from = new Email("lukee_sf@hotmail.com");
+		String subject = "Welcome";
+		Email to = new Email(email);
+		Content content = new Content("text/plain", "Welcome to Api Disney");
+		Mail mail = new Mail(from, subject, to, content);
 		
+		SendGrid sg = new SendGrid(KEY);
+		Request request = new Request();
+		try {
+			request.setMethod(Method.POST);
+			request.setEndpoint("mail/send");
+			request.setBody(mail.build());
+			Response response = sg.api(request);
+			System.out.println(response.getStatusCode());
+			System.out.println(response.getBody());
+			System.out.println(response.getHeaders());
+		} catch (IOException ex) {
+			throw ex;
+		}
 	}
 
 	@Override
@@ -64,23 +81,12 @@ public class UserServiceImpl implements IUserService,UserDetailsService{
 
 
 	@Override
-	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-		Users user = this.userService.findByUsername(username);	
-		
-		if(user == null) {
-			logger.error("Error login, the user or password is invalid");
-			throw new UsernameNotFoundException("Error login, the user or password is invalid");
-		}
-		
-		List<GrantedAuthority> authorities = user.getRoles()
-				.stream()
-				.map(role -> new SimpleGrantedAuthority(role.getRole()))
-				.collect(Collectors.toList());
-		
-		
-		return new User(user.getUsername(), user.getPassword(),user.getEnabled(),true,true,true,authorities);
+			Users user = this.findByUsername(username);
+			return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+					new ArrayList<>());
 	}
+
+
 
 }

@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +41,6 @@ public class MovieRestController {
 		return new ResponseEntity<List<MovieRecord>>(movies, HttpStatus.OK);
 	}
 	
-	@Secured({"ROLE_USER"})
 	@RequestMapping(value="",params = "name",method = RequestMethod.GET)
 	public ResponseEntity<?> getMovieByName(@RequestParam(name="name") String name){
 		Movie  movie = this.movieService.getMovieByName(name);	
@@ -51,7 +48,6 @@ public class MovieRestController {
 		}
 			
 	
-	@Secured({"ROLE_USER"})
 	@RequestMapping(value="",params ="genre",method = RequestMethod.GET)
 	public ResponseEntity<?> getMovieByGenderId(@RequestParam(name="genre") String genre) {
 		
@@ -61,14 +57,12 @@ public class MovieRestController {
 		return new ResponseEntity<>(movies, HttpStatus.NOT_FOUND);	
 	}
 	
-	@Secured({"ROLE_USER"})
 	@RequestMapping(value="" , params="order", method=RequestMethod.GET)
 	public ResponseEntity<?> getAllMoviesOrder(@RequestParam(name="order") String order) throws DataAccessException {
 		List<Movie> movies = this.movieService.listMovieOrder(order);
 		return new ResponseEntity<>(movies, HttpStatus.OK);
 	}
 	
-	@Secured({"ROLE_USER"})
 	@GetMapping("/details/{id}")
 	public ResponseEntity<?> getMovieById(@PathVariable String id){	
 		
@@ -78,7 +72,6 @@ public class MovieRestController {
 		return new ResponseEntity<>(movie,HttpStatus.OK);
 	}
 
-	@Secured({"ROLE_ADMIN"})
 	@PostMapping("/save")
 	public ResponseEntity<?> saveMovie(@Valid @RequestBody Movie movie){
 		
@@ -97,7 +90,6 @@ public class MovieRestController {
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
 	}
 	
-	@Secured({"ROLE_ADMIN"})
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateMovie(@PathVariable String id,@Valid @RequestBody Movie movie){
 		Movie movieResult = null;
@@ -115,7 +107,6 @@ public class MovieRestController {
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	
-	@Secured({"ROLE_ADMIN"})
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> delMovieById(@PathVariable String id){
 		this.movieService.deleteMovie( Optional.of(Long.parseLong(id)).orElseThrow( () -> new NumberFormatException()));		

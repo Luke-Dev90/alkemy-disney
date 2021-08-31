@@ -24,7 +24,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 	//EXCEPTIONS CHARACTER
 	
 	@ExceptionHandler(ListCharacterException.class)
-	public ResponseEntity<Object> handledListCharacter(ListCharacterException ex,WebRequest request){
+	public ResponseEntity<Object> handledListCharacter(DataAccessException ex,WebRequest request){
 		body.put("timestamp", LocalDateTime.now());
 		body.put("message", "Character list not found");
 		return new ResponseEntity<>(body,HttpStatus.NOT_FOUND);
@@ -119,6 +119,16 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		body.put("message","Movie not found by id");
 		return new ResponseEntity<>(body,HttpStatus.NOT_FOUND);
 	}
+	
+	// EXCEPTION USER REGISTER
+	
+	@ExceptionHandler(UserOrEmailException.class)
+	public ResponseEntity<Object> existUserOrEmail(UserOrEmailException ex, WebRequest request){
+		body.put("timestamp",LocalDateTime.now());
+		body.put("message","Username or Email exist");
+		return new ResponseEntity<>(body,HttpStatus.BAD_REQUEST);
+	}
+	
 	// COMMONS EXCEPTIONS
 	
 	@ExceptionHandler(NumberFormatException.class)

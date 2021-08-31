@@ -19,13 +19,6 @@ INSERT INTO character_movie (character_id,movie_id) VALUES(1,2); #  peter
 INSERT INTO character_movie (character_id,movie_id) VALUES (4,3); # mickey
 INSERT INTO character_movie (character_id,movie_id) VALUES(3,4); # thor
 
-INSERT INTO users (username,password,enabled,email) VALUES ('lucas','$2a$10$ApJgIPobvKMnzXJOJbxCyO78rQCSFDCDltFDjbUc7mdskJqcaFmpC',true,'lukee_sf@hotmail.com');
-INSERT INTO users (username,password,enabled,email) VALUES ('admin','$2a$10$ApJgIPobvKMnzXJOJbxCyO78rQCSFDCDltFDjbUc7mdskJqcaFmpC',true,'lucaschalela@hotmail.com');
-
-INSERT INTO roles (role) VALUES ("ROLE_USER");
-INSERT INTO roles (role) VALUES ("ROLE_ADMIN");
-
-INSERT INTO users_roles (user_id,role_id) VALUES (1,1); 
-INSERT INTO users_roles (user_id,role_id) VALUES (2,1);
-INSERT INTO users_roles (user_id,role_id) VALUES (2,2);
+INSERT INTO users (username,password,email) VALUES ('lucas','$2a$10$ApJgIPobvKMnzXJOJbxCyO78rQCSFDCDltFDjbUc7mdskJqcaFmpC','lukee_sf@hotmail.com');
+INSERT INTO users (username,password,email) VALUES ('admin','$2a$10$ApJgIPobvKMnzXJOJbxCyO78rQCSFDCDltFDjbUc7mdskJqcaFmpC','lucaschalela@hotmail.com');
 

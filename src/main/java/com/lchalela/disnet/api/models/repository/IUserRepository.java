@@ -10,4 +10,5 @@ public interface IUserRepository extends CrudRepository<Users, Long> {
 
 	public Users findByUsername(String username);
 	
+	public Users findByUsernameOrEmail(String username,String email);
 }
