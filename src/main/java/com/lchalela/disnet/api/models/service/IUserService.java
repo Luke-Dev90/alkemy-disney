@@ -1,11 +1,16 @@
 package com.lchalela.disnet.api.models.service;
 
-import com.lchalela.disnet.api.models.entity.User;
+import java.io.IOException;
+
+import com.lchalela.disnet.api.models.entity.Users;
 
 public interface IUserService {
 	
-	public User saveUser(User user);
+	public Users findByUsername(String username);
+	
+	public Users saveUser(Users user);
 	
 	public void deleteUser(Long id);
 	
+	public void sendWelcomeEmail(String email) throws IOException;
 }

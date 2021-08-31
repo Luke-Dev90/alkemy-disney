@@ -4,15 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lchalela.disnet.api.models.records.CharacterRecord;
 import com.lchalela.disnet.api.models.entity.Character;
 import com.lchalela.disnet.api.models.exception.ErrorDeletedException;
-import com.lchalela.disnet.api.models.exception.InvalidFormatException;
-import com.lchalela.disnet.api.models.exception.ListCharacterException;
 import com.lchalela.disnet.api.models.exception.NotCreateCharacter;
 import com.lchalela.disnet.api.models.service.ICharacterService;
 
@@ -46,6 +42,7 @@ public class CharacterRestController {
 		return new ResponseEntity<>(characters, HttpStatus.OK);
 	}
 
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "", params = "name", method = RequestMethod.GET)
 	public ResponseEntity<?> getCharacterByName(@RequestParam(name = "name") String name) {
 
@@ -55,6 +52,7 @@ public class CharacterRestController {
 		return new ResponseEntity<>(character, HttpStatus.OK);
 	}
 
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "", params = "id", method = RequestMethod.GET)
 	public ResponseEntity<?> getCharacterById(@RequestParam(name = "id") String id) {
 		
@@ -64,6 +62,7 @@ public class CharacterRestController {
 		return new ResponseEntity<>(character, HttpStatus.OK);
 	}
 
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "", params = "age", method = RequestMethod.GET)
 	public ResponseEntity<?> getCharactersByAge(@RequestParam(name = "age") String age) {
 		List<Character> characters = null;
@@ -74,6 +73,7 @@ public class CharacterRestController {
 		return new ResponseEntity<>(characters, HttpStatus.OK);
 	}
 
+	@Secured({"ROLE_USER"})
 	@RequestMapping(value = "", params = "movies", method = RequestMethod.GET)
 	public ResponseEntity<?> listCharacterByIdMovie(@RequestParam(name = "movies") String movies) {
 		
@@ -84,6 +84,7 @@ public class CharacterRestController {
 		return new ResponseEntity<>(characters, HttpStatus.OK);
 	}
 
+	@Secured({"ROLE_ADMIN"})
 	@PostMapping("/save")
 	public ResponseEntity<?> saveCharacter(@Valid @RequestBody Character character) {
 
@@ -97,6 +98,7 @@ public class CharacterRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
+	@Secured({"ROLE_ADMIN"})
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateCharacter(@Valid @RequestBody Character character,
 			@PathVariable String id) {
@@ -109,6 +111,7 @@ public class CharacterRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
+	@Secured({"ROLE_ADMIN"})
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteCharacterById(@PathVariable String id) throws ErrorDeletedException{
 			

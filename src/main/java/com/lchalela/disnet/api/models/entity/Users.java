@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name="users")
-public class User implements Serializable{
+public class Users implements Serializable{
 	
 	private static final long serialVersionUID = -8632088867562009667L;
 	
@@ -29,8 +29,10 @@ public class User implements Serializable{
 	@Column(unique = true, length = 20)
 	private String username;
 	
-	@Column(length = 60)
+	@Column(length = 70)
 	private String password;
+	
+	private Boolean enabled;
 	
 	@Column(unique = true)
 	private String email;
@@ -80,6 +82,13 @@ public class User implements Serializable{
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-	
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
 	
 }
