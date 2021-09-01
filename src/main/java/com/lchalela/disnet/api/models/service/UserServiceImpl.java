@@ -26,7 +26,8 @@ import com.sendgrid.helpers.mail.objects.Email;
 @Service
 public class UserServiceImpl implements IUserService , UserDetailsService {
 	
-	private final String KEY = "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";
+	// Type you sendgrid key here
+	private final String KEY = "";
 	
 	@Autowired
 	private IUserRepository userService;
