@@ -52,12 +52,15 @@ public class UserRestController {
 	@PostMapping("/login")
 	public ResponseEntity<?> generatetoken(@RequestBody AuthenticationRequest authrequest) throws Exception {
 		Map<String,Object> response = new HashMap<>();
-		try {
+
+		try {			
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authrequest.getUsername(), authrequest.getPassword()));
-		} catch (Exception ex) {
-			throw new Exception("invalid username/password");
+		}catch(Exception ex) {
+			response.put("message", "Invalid access, username or password invalid");
+			return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
 		}
+
 		
 		response.put("token",jwtUtil.generateToken(authrequest.getUsername()) );
 		response.put("message", "Authorizated");
