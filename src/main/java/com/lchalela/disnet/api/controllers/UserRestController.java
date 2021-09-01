@@ -3,6 +3,7 @@ package com.lchalela.disnet.api.controllers;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lchalela.disnet.api.auth.JwtUtil;
 import com.lchalela.disnet.api.models.entity.AuthenticationRequest;
 import com.lchalela.disnet.api.models.entity.Users;
+import com.lchalela.disnet.api.models.exception.UserInvalidException;
 import com.lchalela.disnet.api.models.service.IUserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -52,12 +54,15 @@ public class UserRestController {
 	@PostMapping("/login")
 	public ResponseEntity<?> generatetoken(@RequestBody AuthenticationRequest authrequest) throws Exception {
 		Map<String,Object> response = new HashMap<>();
-		try {
+
+		try {			
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authrequest.getUsername(), authrequest.getPassword()));
-		} catch (Exception ex) {
-			throw new Exception("invalid username/password");
+		}catch(Exception ex) {
+			response.put("message", "Invalid access, username or password invalid");
+			return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
 		}
+
 		
 		response.put("token",jwtUtil.generateToken(authrequest.getUsername()) );
 		response.put("message", "Authorizated");

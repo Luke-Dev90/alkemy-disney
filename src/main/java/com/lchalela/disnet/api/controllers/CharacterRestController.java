@@ -53,8 +53,9 @@ public class CharacterRestController {
 		
 		return new ResponseEntity<>(character, HttpStatus.OK);
 	}
+	
 
-	@ApiOperation(value="Filter by character name")
+	@ApiOperation(value="Get details character by id")
 	@RequestMapping(value = "", params = "id", method = RequestMethod.GET)
 	public ResponseEntity<?> getCharacterById(@RequestParam(name = "id") String id) {
 		
@@ -85,6 +86,7 @@ public class CharacterRestController {
 
 		return new ResponseEntity<>(characters, HttpStatus.OK);
 	}
+	
 
 	@ApiOperation(value="Save character")
 	@PostMapping("/save")

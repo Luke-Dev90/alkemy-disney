@@ -129,6 +129,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(body,HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(UserInvalidException.class)
+	public ResponseEntity<Object> userInvalidException(UserInvalidException ex, WebRequest request){
+		body.put("timestamp",LocalDateTime.now());
+		body.put("message","invalid username/password");
+		return new ResponseEntity<>(body,HttpStatus.BAD_REQUEST);
+	}
+	
 	// COMMONS EXCEPTIONS
 	
 	@ExceptionHandler(NumberFormatException.class)
