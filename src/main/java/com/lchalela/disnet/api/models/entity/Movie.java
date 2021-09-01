@@ -39,11 +39,11 @@ public class Movie  implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty
+	@NotEmpty(message = "Title is required")
 	@Size(min=1, max=60)
 	private String title;
 	
-	@NotEmpty
+	@NotEmpty(message = "Image url is required")
 	private String image;
 	
 	@Column

@@ -26,6 +26,8 @@ import com.lchalela.disnet.api.models.entity.Movie;
 import com.lchalela.disnet.api.models.records.MovieRecord;
 import com.lchalela.disnet.api.models.service.IMovieService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value = "/movies")
 public class MovieRestController {
@@ -34,20 +36,20 @@ public class MovieRestController {
 	private IMovieService movieService;
 	Map<String,Object> response = new HashMap<>();
 
-	
+	@ApiOperation(value="List all movies")
 	@GetMapping
 	public ResponseEntity<List<MovieRecord>> getAllMovies() {
 		List<MovieRecord> movies = this.movieService.getAllMovies();
 		return new ResponseEntity<List<MovieRecord>>(movies, HttpStatus.OK);
 	}
-	
+	@ApiOperation(value="Filter movie by name")
 	@RequestMapping(value="",params = "name",method = RequestMethod.GET)
 	public ResponseEntity<?> getMovieByName(@RequestParam(name="name") String name){
 		Movie  movie = this.movieService.getMovieByName(name);	
 			return new ResponseEntity<>(movie,HttpStatus.OK);
 		}
 			
-	
+	@ApiOperation(value="Filter movie by Genre")
 	@RequestMapping(value="",params ="genre",method = RequestMethod.GET)
 	public ResponseEntity<?> getMovieByGenderId(@RequestParam(name="genre") String genre) {
 		
@@ -57,12 +59,14 @@ public class MovieRestController {
 		return new ResponseEntity<>(movies, HttpStatus.NOT_FOUND);	
 	}
 	
+	@ApiOperation(value="List sort by 'asc'  or 'desc' ")
 	@RequestMapping(value="" , params="order", method=RequestMethod.GET)
 	public ResponseEntity<?> getAllMoviesOrder(@RequestParam(name="order") String order) throws DataAccessException {
 		List<Movie> movies = this.movieService.listMovieOrder(order);
 		return new ResponseEntity<>(movies, HttpStatus.OK);
 	}
 	
+	@ApiOperation(value="Details movie by id")
 	@GetMapping("/details/{id}")
 	public ResponseEntity<?> getMovieById(@PathVariable String id){	
 		
@@ -72,6 +76,7 @@ public class MovieRestController {
 		return new ResponseEntity<>(movie,HttpStatus.OK);
 	}
 
+	@ApiOperation(value="Save movie")
 	@PostMapping("/save")
 	public ResponseEntity<?> saveMovie(@Valid @RequestBody Movie movie){
 		
@@ -90,6 +95,7 @@ public class MovieRestController {
 		return new ResponseEntity<Map<String,Object>>(response,HttpStatus.CREATED);
 	}
 	
+	@ApiOperation(value="Update movie by id")
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateMovie(@PathVariable String id,@Valid @RequestBody Movie movie){
 		Movie movieResult = null;
@@ -107,6 +113,7 @@ public class MovieRestController {
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	
+	@ApiOperation(value="Delete movie by id")
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> delMovieById(@PathVariable String id){
 		this.movieService.deleteMovie( Optional.of(Long.parseLong(id)).orElseThrow( () -> new NumberFormatException()));		

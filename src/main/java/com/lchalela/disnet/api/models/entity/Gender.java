@@ -25,10 +25,10 @@ public class Gender implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty
+	@NotEmpty(message = "name required")
 	private String name;
 	
-	@NotEmpty
+	@NotEmpty(message = "imgen url required")
 	private String image;
 	
 

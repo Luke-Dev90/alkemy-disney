@@ -31,20 +31,20 @@ public class Character implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotEmpty
+	@NotEmpty(message = "Name not null and min 1 between 60")
 	@Size(min = 1, max=60)
 	private String name;
 	
-	@NotEmpty
+	@NotEmpty(message = "imgen url required")
 	private String image;
 	
-	@NotNull
+	@NotNull(message = "Age required")
 	private Long age;
 	
-	@NotNull
+	@NotNull(message = "Weight required")
 	private Double weight;
 	
-	@NotEmpty
+	@NotEmpty(message = "Historty required")
 	private String history;
 	
 	@JsonIgnoreProperties("characters")

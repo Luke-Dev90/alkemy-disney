@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -21,15 +22,15 @@ public class Users implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotEmpty
+	@NotEmpty(message="username is required length max 20")
 	@Column(unique = true, length = 20)
 	private String username;
 
-	@Size(min = 5)
+	@Size(min = 5,message="password length: 5 between 70")
 	@Column(length = 70)
 	private String password;
 
-	
+	@Email(message="Email format valid is required")
 	@Column(unique = true)
 	private String email;
 	

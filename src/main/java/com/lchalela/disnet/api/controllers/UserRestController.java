@@ -23,6 +23,8 @@ import com.lchalela.disnet.api.models.entity.AuthenticationRequest;
 import com.lchalela.disnet.api.models.entity.Users;
 import com.lchalela.disnet.api.models.service.IUserService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/auth")
 public class UserRestController {
@@ -36,7 +38,7 @@ public class UserRestController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	
+	@ApiOperation(value="Register new user")
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody Users user) throws IOException{
 		Map<String,Object> response = new HashMap<>();
@@ -46,6 +48,7 @@ public class UserRestController {
 		return new ResponseEntity<>(response,HttpStatus.CREATED);
 	}
 	
+	@ApiOperation(value="Login users")
 	@PostMapping("/login")
 	public ResponseEntity<?> generatetoken(@RequestBody AuthenticationRequest authrequest) throws Exception {
 		Map<String,Object> response = new HashMap<>();
