@@ -58,13 +58,13 @@ public class Movie  implements Serializable{
 	
 
 	@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
-	@ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH})
 	@JoinColumn(name="gender_id")
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
 	private Gender gender;
 	
 	@JsonIgnoreProperties("movies")
-	@ManyToMany(mappedBy = "movies",cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+	@ManyToMany(mappedBy = "movies",cascade = {CascadeType.MERGE,
 			CascadeType.REFRESH },
 				fetch = FetchType.LAZY)
 

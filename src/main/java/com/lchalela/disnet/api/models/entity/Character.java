@@ -48,7 +48,7 @@ public class Character implements Serializable {
 	private String history;
 	
 	@JsonIgnoreProperties("characters")
-	@ManyToMany(cascade =  {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+	@ManyToMany(cascade =  { CascadeType.MERGE,
 			CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name="character_movie",
 		joinColumns = @JoinColumn(name="character_id"),
